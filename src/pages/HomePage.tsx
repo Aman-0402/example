@@ -36,6 +36,25 @@ export const HomePage: React.FC<HomePageProps> = ({
         customPortraitUrl={customPortraitUrl}
       />
 
+      {/* Developer Wallpaper Showcase */}
+      <section
+        aria-label="Developer wallpaper"
+        className="px-4 sm:px-6 md:px-8 max-w-7xl mx-auto w-full pb-12"
+      >
+        <div className="overflow-hidden rounded-3xl border border-[#B69A68]/30 bg-[#161616] shadow-2xl">
+          <img
+            src="/developer-wallpaper.png"
+            alt="Funny developer cat wallpaper with coding-themed artwork"
+            className="block w-full h-auto"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <p className="mt-3 text-center text-xs font-mono tracking-wide text-neutral-500">
+          DEVELOPER MODE · CODE · DEBUG · COFFEE · REPEAT
+        </p>
+      </section>
+
       {/* Featured Teaser: Three Pillars of Aman Raj's Portfolio */}
       <section className="py-16 px-4 sm:px-6 md:px-8 max-w-7xl mx-auto w-full border-t border-neutral-800/80">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
