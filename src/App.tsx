@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { MonogramIntro } from './components/MonogramIntro';
 import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { About } from './components/About';
-import { Journey } from './components/Journey';
-import { Skills } from './components/Skills';
-import { Projects } from './components/Projects';
-import { Achievements } from './components/Achievements';
-import { Education } from './components/Education';
-import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { ResumeModal } from './components/ResumeModal';
 import { AssetSetupModal } from './components/AssetSetupModal';
+import { HomePage } from './pages/HomePage';
+import { AboutPage } from './pages/AboutPage';
+import { JourneyPage } from './pages/JourneyPage';
+import { SkillsPage } from './pages/SkillsPage';
+import { ProjectsPage } from './pages/ProjectsPage';
+import { AchievementsPage } from './pages/AchievementsPage';
+import { EducationPage } from './pages/EducationPage';
+import { ContactPage } from './pages/ContactPage';
+import { ResumePage } from './pages/ResumePage';
+import { useAppRouter, PageId } from './router';
 import { TRANSLATIONS, Language } from './data/translations';
 import { downloadOfficialResume } from './utils/resumeDownload';
 
 export default function App() {
+  const { currentPage, navigate } = useAppRouter();
+
   // Theme state: Dark mode by default, persisted locally
   const [isDark, setIsDark] = useState<boolean>(() => {
     const saved = localStorage.getItem('ar_portfolio_theme');
@@ -95,9 +99,50 @@ export default function App() {
 
   const t = TRANSLATIONS[currentLang];
 
+  const renderActivePage = () => {
+    switch (currentPage) {
+      case 'about':
+        return <AboutPage currentLang={currentLang} t={t} onNavigate={navigate} />;
+      case 'journey':
+        return <JourneyPage currentLang={currentLang} t={t} onNavigate={navigate} />;
+      case 'skills':
+        return <SkillsPage currentLang={currentLang} t={t} onNavigate={navigate} />;
+      case 'projects':
+        return <ProjectsPage currentLang={currentLang} t={t} onNavigate={navigate} />;
+      case 'achievements':
+        return <AchievementsPage currentLang={currentLang} t={t} onNavigate={navigate} />;
+      case 'education':
+        return <EducationPage currentLang={currentLang} t={t} onNavigate={navigate} />;
+      case 'contact':
+        return <ContactPage currentLang={currentLang} t={t} onNavigate={navigate} />;
+      case 'resume':
+        return (
+          <ResumePage
+            currentLang={currentLang}
+            t={t}
+            onNavigate={navigate}
+            onDownloadResume={downloadOfficialResume}
+          />
+        );
+      case 'home':
+      default:
+        return (
+          <HomePage
+            currentLang={currentLang}
+            t={t}
+            onNavigate={navigate}
+            onOpenResume={() => setIsResumeOpen(true)}
+            onDownloadResume={downloadOfficialResume}
+            onOpenPhotoConfig={() => setIsPhotoConfigOpen(true)}
+            customPortraitUrl={customPortraitUrl}
+          />
+        );
+    }
+  };
+
   return (
     <div
-      className={`min-h-screen transition-colors duration-300 font-sans ${
+      className={`min-h-screen transition-colors duration-300 font-sans flex flex-col justify-between ${
         isDark ? 'bg-[#121212] text-[#F7F4ED]' : 'bg-[#F7F4ED] text-[#242424]'
       }`}
     >
@@ -116,47 +161,24 @@ export default function App() {
         isDark={isDark}
         onToggleTheme={toggleTheme}
         t={t}
+        currentPage={currentPage}
+        onNavigate={navigate}
         onOpenResume={() => setIsResumeOpen(true)}
       />
 
-      {/* Main Content Sections */}
-      <main className="w-full">
-        {/* Hero Section */}
-        <Hero
-          currentLang={currentLang}
-          t={t}
-          onOpenResume={() => setIsResumeOpen(true)}
-          onDownloadResume={downloadOfficialResume}
-          onOpenPhotoConfig={() => setIsPhotoConfigOpen(true)}
-          customPortraitUrl={customPortraitUrl}
-        />
-
-        {/* About Section */}
-        <About t={t} />
-
-        {/* Career Journey Timeline */}
-        <Journey currentLang={currentLang} t={t} />
-
-        {/* Skills & Technologies Grid */}
-        <Skills currentLang={currentLang} t={t} />
-
-        {/* Selected Projects Gallery */}
-        <Projects currentLang={currentLang} t={t} />
-
-        {/* Verified Achievements & Impact */}
-        <Achievements currentLang={currentLang} t={t} />
-
-        {/* Education, Certifications & Workshops */}
-        <Education currentLang={currentLang} t={t} />
-
-        {/* Direct Contact (Form-free) */}
-        <Contact currentLang={currentLang} t={t} />
+      {/* Main Multi-Page Routed View */}
+      <main className="w-full flex-1">
+        {renderActivePage()}
       </main>
 
       {/* Footer */}
-      <Footer t={t} onReplayIntro={handleReplayIntro} />
+      <Footer
+        t={t}
+        onReplayIntro={handleReplayIntro}
+        onNavigate={navigate}
+      />
 
-      {/* Resume Viewer Modal */}
+      {/* In-app Quick Resume Modal (available from any page) */}
       <ResumeModal
         isOpen={isResumeOpen}
         onClose={() => setIsResumeOpen(false)}

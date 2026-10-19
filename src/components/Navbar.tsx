@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Moon, Sun, Globe, Menu, X, FileText } from 'lucide-react';
 import { Language, Translations } from '../data/translations';
+import { PageId } from '../router';
 
 interface NavbarProps {
   currentLang: Language;
@@ -8,6 +9,8 @@ interface NavbarProps {
   isDark: boolean;
   onToggleTheme: () => void;
   t: Translations;
+  currentPage: PageId;
+  onNavigate: (page: PageId) => void;
   onOpenResume: () => void;
 }
 
@@ -17,38 +20,23 @@ export const Navbar: React.FC<NavbarProps> = ({
   isDark,
   onToggleTheme,
   t,
+  currentPage,
+  onNavigate,
   onOpenResume
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30);
-
-      // Section spy
-      const sections = ['home', 'about', 'journey', 'skills', 'projects', 'achievements', 'education', 'contact'];
-      const scrollPosition = window.scrollY + 120;
-
-      for (const section of sections) {
-        const el = document.getElementById(section);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(section);
-            break;
-          }
-        }
-      }
+      setIsScrolled(window.scrollY > 20);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
+  const navLinks: { id: PageId; label: string }[] = [
     { id: 'home', label: t.nav.home },
     { id: 'about', label: t.nav.about },
     { id: 'journey', label: t.nav.journey },
@@ -59,14 +47,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'contact', label: t.nav.contact }
   ];
 
-  const handleNavClick = (id: string) => {
+  const handleNavClick = (id: PageId) => {
     setMobileMenuOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      const yOffset = -80;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
+    onNavigate(id);
   };
 
   return (
@@ -104,7 +87,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="hidden lg:flex items-center gap-6 xl:gap-7 text-xs font-medium text-neutral-400 dark:text-neutral-300"
           >
             {navLinks.map((link) => {
-              const isActive = activeSection === link.id;
+              const isActive = currentPage === link.id;
               return (
                 <button
                   key={link.id}
@@ -201,7 +184,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   key={link.id}
                   onClick={() => handleNavClick(link.id)}
                   className={`text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    activeSection === link.id
+                    currentPage === link.id
                       ? 'bg-[#B69A68]/15 text-[#B69A68]'
                       : 'text-neutral-300 hover:bg-white/5 hover:text-white'
                   }`}

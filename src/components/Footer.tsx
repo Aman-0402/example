@@ -2,13 +2,15 @@ import React from 'react';
 import { ArrowUp, Github, Linkedin, Code, Mail, RotateCcw } from 'lucide-react';
 import { PORTFOLIO_CONFIG } from '../data/portfolioData';
 import { Translations } from '../data/translations';
+import { PageId } from '../router';
 
 interface FooterProps {
   t: Translations;
   onReplayIntro: () => void;
+  onNavigate?: (page: PageId) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ t, onReplayIntro }) => {
+export const Footer: React.FC<FooterProps> = ({ t, onReplayIntro, onNavigate }) => {
   const currentYear = new Date().getFullYear();
 
   const scrollToTop = () => {
@@ -97,6 +99,22 @@ export const Footer: React.FC<FooterProps> = ({ t, onReplayIntro }) => {
             </a>
           </div>
         </div>
+
+        {/* Multi-Page Quick Navigation */}
+        {onNavigate && (
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-mono text-neutral-400 py-4 border-t border-neutral-800/60">
+            <span className="text-[#B69A68] uppercase tracking-wider text-[11px] font-semibold">Pages:</span>
+            <button onClick={() => onNavigate('home')} className="hover:text-[#B69A68] transition-colors">{t.nav.home}</button>
+            <button onClick={() => onNavigate('about')} className="hover:text-[#B69A68] transition-colors">{t.nav.about}</button>
+            <button onClick={() => onNavigate('journey')} className="hover:text-[#B69A68] transition-colors">{t.nav.journey}</button>
+            <button onClick={() => onNavigate('skills')} className="hover:text-[#B69A68] transition-colors">{t.nav.skills}</button>
+            <button onClick={() => onNavigate('projects')} className="hover:text-[#B69A68] transition-colors">{t.nav.projects}</button>
+            <button onClick={() => onNavigate('achievements')} className="hover:text-[#B69A68] transition-colors">{t.nav.achievements}</button>
+            <button onClick={() => onNavigate('education')} className="hover:text-[#B69A68] transition-colors">{t.nav.education}</button>
+            <button onClick={() => onNavigate('contact')} className="hover:text-[#B69A68] transition-colors">{t.nav.contact}</button>
+            <button onClick={() => onNavigate('resume')} className="text-[#B69A68] hover:underline font-semibold">{t.nav.viewResume}</button>
+          </div>
+        )}
 
         {/* Bottom Tier: Copyright & Legality */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-neutral-500 pt-6 border-t border-neutral-800/60">
