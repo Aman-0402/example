@@ -43,7 +43,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       >
         <div className="overflow-hidden rounded-3xl border border-[#B69A68]/30 bg-[#161616] shadow-2xl">
           <img
-            src="/developer-wallpaper.png"
+            src="https://raw.githubusercontent.com/Aman-0402/example/main/public/developer-wallpaper.png"
             alt="Funny developer cat wallpaper with coding-themed artwork"
             className="block w-full h-auto"
             loading="lazy"
